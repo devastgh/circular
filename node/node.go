@@ -14,7 +14,7 @@ import (
 const (
 	CIRCULAR_DIR                     = "circular"
 	DEFAULT_PEER_REFRESH_INTERVAL    = 30  // seconds
-	DEFAULT_LIQUIDITY_RESET_INTERVAL = 300 // minutes
+	DEFAULT_LIQUIDITY_RESET_INTERVAL = 120 // minutes
 	DEFAULT_RPC_TIMEOUT              = 60  // seconds
 )
 
