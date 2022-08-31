@@ -49,8 +49,8 @@ func (r *Rebalance) validateLiquidityParameters(out, in *graph.Channel) error {
 
 	r.Node.Logln(glightning.Debug, "refreshing in and out channels")
 	// TODO: this refreshes fees, but not spendable and receivable amounts
-	r.Node.RefreshChannel(r.OutChannel)
-	r.Node.RefreshChannel(r.InChannel)
+	//r.Node.RefreshChannel(r.OutChannel)
+	//r.Node.RefreshChannel(r.InChannel)
 
 	inChannel, err := r.Node.GetPeerChannelFromGraphChannel(in)
 	if err != nil {
