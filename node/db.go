@@ -6,6 +6,11 @@ import (
 	badger "github.com/dgraph-io/badger/v3"
 	"github.com/elementsproject/glightning/glightning"
 	"log"
+	"time"
+)
+
+const (
+	FOURTEEN_DAYS = 14 * 24 * time.Hour
 )
 
 type Store struct {
@@ -24,9 +29,10 @@ func NewDB(path string) *Store {
 	}
 }
 
+// Every key is allowed to stay in the db for at most 14 days
 func (s *Store) Set(key string, value []byte) error {
 	err := s.db.Update(func(txn *badger.Txn) error {
-		return txn.Set([]byte(key), value)
+		return txn.SetEntry(badger.NewEntry([]byte(key), value).WithTTL(FOURTEEN_DAYS))
 	})
 	if err != nil {
 		return err
@@ -143,4 +149,32 @@ func (s *Store) ListRoutes() ([]graph.PrettyRoute, error) {
 		return nil, err
 	}
 	return result, nil
+}
+
+func (n *Node) GarbageCollect() {
+	n.Logln(glightning.Info, "Garbage collecting")
+	err := n.DB.db.RunValueLogGC(0.5)
+	if err != nil {
+		n.Logf(glightning.Unusual, "GC report: %+v", err)
+	}
+}
+
+func (n *Node) SaveToDb(key string, value any) error {
+	if !n.saveStats {
+		return nil
+	}
+
+	b, err := json.Marshal(value)
+	if err != nil {
+		n.Logln(glightning.Unusual, err)
+		return err
+	}
+
+	err = n.DB.Set(key, b)
+	if err != nil {
+		n.Logln(glightning.Unusual, err)
+		return err
+	}
+
+	return nil
 }
