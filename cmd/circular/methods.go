@@ -33,9 +33,19 @@ func registerMethods(p *glightning.Plugin) {
 	rpcStats.Category = "utility"
 	p.RegisterMethod(rpcStats)
 
-	deleteStats := glightning.NewRpcMethod(&node.DeleteStats{}, "Delete Stats")
-	deleteStats.LongDesc = "Delete the stats of the usage of circular"
-	deleteStats.Category = "utility"
-	p.RegisterMethod(deleteStats)
+	rpfDeleteStats := glightning.NewRpcMethod(&node.DeleteStats{}, "Delete Stats")
+	rpfDeleteStats.LongDesc = "Delete the stats of the usage of circular"
+	rpfDeleteStats.Category = "utility"
+	p.RegisterMethod(rpfDeleteStats)
+
+	rpcStop := glightning.NewRpcMethod(&node.Stop{}, "Stop circular")
+	rpcStop.LongDesc = "Stop future htlcs from being fired"
+	rpcStop.Category = "utility"
+	p.RegisterMethod(rpcStop)
+
+	rpcResume := glightning.NewRpcMethod(&node.Resume{}, "Resume circular")
+	rpcResume.LongDesc = "Resume activity after a stop command. Allows htlcs to be fired"
+	rpcResume.Category = "utility"
+	p.RegisterMethod(rpcResume)
 
 }
